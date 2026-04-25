@@ -1,186 +1,103 @@
 # CRM Sales Analytics Platform
 
+An end-to-end **Analytics Engineering** project that turns raw CRM sales data into clean, tested, documented, and business-ready analytics models for **Power BI**.
+
+## Recruiter Summary
+
+This project demonstrates my ability to work across the analytics engineering workflow:
+
+- data generation and ingestion;
+- Snowflake warehouse modeling;
+- dbt transformations;
+- staging, intermediate, fact, dimension, and mart models;
+- data quality tests;
+- metric validation;
+- Power BI dashboarding;
+- business-oriented analytics storytelling.
+
+It simulates the kind of work an Analytics Engineer or technical Data Analyst would do to transform raw CRM data into trusted business reporting.
+
 ## Overview
 
-This project is an end-to-end analytics engineering project that transforms raw CRM sales data into clean, tested, and business-ready analytics models.
+This project simulates a modern B2B sales analytics stack to analyze:
 
-The goal is to help a sales organization monitor revenue, customers, products, regions, sales representatives, and opportunities through a reliable data pipeline and Power BI dashboard.
+- Revenue (recognized / gross / net)
+- Customers and customer lifetime value
+- Products and categories
+- Regions
+- Sales representative performance
+- Opportunities and pipeline conversion
 
 ## Business Problem
 
-The company needs a centralized analytics layer to answer key sales questions:
+The sales leadership team needs better visibility into sales performance.
+
+The company wants to answer questions such as:
 
 - How much revenue are we generating?
-- Which customers and regions are the most profitable?
-- Which products are driving sales?
-- Which sales representatives are performing best?
-- What is our opportunity conversion rate?
-- How is revenue evolving over time?
+- Which customers generate the most value?
+- Which products and categories drive revenue?
+- Which regions are performing best?
+- Which sales representatives perform best?
+- What is the opportunity win rate?
+- What is the weighted value of the sales pipeline?
 
-## Tech Stack
+## Solution
 
-- Snowflake
-- dbt
-- SQL
-- Python
-- Power BI
-- GitHub
+The project builds a complete analytics workflow:
+
+1. Generate synthetic CRM data with Python.
+2. Load raw CSV files into Snowflake.
+3. Store source data in a RAW schema.
+4. Transform data with dbt.
+5. Build staging, intermediate, fact, dimension, and mart models.
+6. Connect Power BI to the Snowflake MARTS layer.
+7. Build a four-page sales analytics dashboard.
 
 ## Architecture
 
-Raw CRM data is generated as CSV files, loaded into Snowflake, transformed using dbt, and visualized in Power BI.
-
-```text
-CSV files
-   ↓
-Snowflake RAW schema
-   ↓
-dbt staging models
-   ↓
-dbt intermediate models
-   ↓
-dbt marts
-   ↓
-Power BI dashboard
+```mermaid
+flowchart TD
+    A[Python Synthetic Data Generator] --> B[CSV Files]
+    B --> C[Snowflake RAW Schema]
+    C --> D[dbt Staging Models]
+    D --> E[dbt Intermediate Models]
+    E --> F[dbt Marts Layer]
+    F --> G[Power BI Dashboard]
 ```
 
-## Data Sources
+![Architecture diagram](architecture/architecture_diagram.png)
 
-The project uses synthetic CRM data:
+## Data Model (Star Schema)
 
-- customers
-- products
-- sales representatives
-- regions
-- orders
-- order items
-- opportunities
-
-## Data Generation
-
-Synthetic CRM data is generated with a Python script located in:
-
-```text
-scripts/generate_crm_data.py
-```
-
-To generate the raw CSV files:
-
-```bash
-uv run scripts/generate_crm_data.py
-```
-
-The files are generated in:
-
-```text
-data/raw/
-```
-
-## Snowflake RAW Layer
-
-The raw CSV files are loaded into Snowflake under the `RAW` schema.
-
-```text
-CRM_SALES_ANALYTICS.RAW.RAW_CUSTOMERS
-CRM_SALES_ANALYTICS.RAW.RAW_PRODUCTS
-CRM_SALES_ANALYTICS.RAW.RAW_REGIONS
-CRM_SALES_ANALYTICS.RAW.RAW_SALES_REPS
-CRM_SALES_ANALYTICS.RAW.RAW_ORDERS
-CRM_SALES_ANALYTICS.RAW.RAW_ORDER_ITEMS
-CRM_SALES_ANALYTICS.RAW.RAW_OPPORTUNITIES
-```
-
-## dbt Staging Layer
-
-The project uses dbt to transform raw CRM data into clean staging models.
-
-Staging models are located in:
-
-```text
-dbt/crm_sales_analytics/models/staging/crm/
-```
-
-The staging layer includes:
-
-- source definitions
-- cleaned column names
-- type casting
-- basic standardization
-- dbt tests
-- dbt documentation
-
-To run the staging models:
-
-```bash
-cd dbt/crm_sales_analytics
-dbt run --select staging
-dbt test --select staging
-```
-
-## dbt Intermediate and Marts Layer
-
-The project uses dbt to build analytics-ready models from the staging layer.
-
-### Intermediate Models
-
-Intermediate models apply reusable joins and business logic:
-
-- `int_order_items_enriched`
-- `int_opportunities_enriched`
-- `int_customer_order_metrics`
+The marts layer follows a star schema design.
 
 ### Core Marts
 
-The core marts follow a star schema design:
-
-- `dim_customers`
-- `dim_products`
-- `dim_regions`
-- `dim_sales_reps`
-- `dim_dates`
-- `fct_order_items`
-- `fct_opportunities`
+- Dimensions: `dim_customers`, `dim_products`, `dim_regions`, `dim_sales_reps`, `dim_dates`
+- Facts: `fct_order_items`, `fct_opportunities`
 
 ### Business Marts
-
-Business marts are designed for Power BI reporting:
 
 - `mart_sales_performance`
 - `mart_customer_revenue`
 - `mart_product_performance`
 
+![Power BI data model](dashboards/powerbi/powerbi_data_model.png)
+
 ### Main Business Rule
 
-Recognized revenue is calculated only for completed and paid orders:
+Recognized revenue is counted only for completed and paid orders:
 
 ```text
 recognized_revenue = quantity * unit_price * (1 - discount)
 ```
 
-To build the models:
-
-```bash
-cd dbt/crm_sales_analytics
-dbt build
-```
-
-## Key Metrics
-
-- Total Revenue
-- Monthly Revenue
-- Average Order Value
-- Revenue by Region
-- Revenue by Product
-- Revenue by Sales Representative
-- Customer Lifetime Value
-- Opportunity Conversion Rate
-- Pipeline Value
-
 ## Power BI Dashboard
 
 The final analytics layer is visualized in Power BI.
 
-The dashboard connects to the Snowflake MARTS schema and provides four analysis pages:
+The dashboard connects to the Snowflake `MARTS` schema and provides four pages:
 
 - Executive Overview
 - Sales Performance
@@ -193,23 +110,89 @@ Dashboard file:
 dashboards/powerbi/crm_sales_analytics_dashboard.pbix
 ```
 
-Screenshots:
+### Screenshots
 
-```text
-dashboards/screenshots/
+#### Executive Overview
+
+![Executive Overview](dashboards/powerbi/executive_overview.png)
+
+#### Sales Performance
+
+![Sales Performance](dashboards/powerbi/sales_performance.png)
+
+#### Customer Analysis
+
+![Customer Analysis](dashboards/powerbi/customer_analysis.png)
+
+#### Product Performance
+
+![Product Performance](dashboards/powerbi/product_performance.png)
+
+## Getting Started
+
+### 1) Generate Synthetic Data (CSV)
+
+Install Python dependencies:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-The dashboard uses a star schema model with fact and dimension tables created by dbt.
+Generate raw CSV files:
 
-## Project Status
+```bash
+python scripts/generate_crm_data.py
+```
 
-In progress.
+Output directory:
 
-## Next Steps
+```text
+data/raw/
+```
 
-- Generate synthetic CRM data
-- Load raw data into Snowflake
-- Build dbt staging models
-- Build fact and dimension tables
-- Add dbt tests and documentation
-- Build Power BI dashboard
+### 2) Snowflake Setup (RAW Layer)
+
+Snowflake SQL scripts are provided in:
+
+```text
+snowflake/
+```
+
+Typical execution order:
+
+1. `create_database.sql`
+2. `create_stage.sql`
+3. `create_raw_tables.sql`
+4. `load_data.sql`
+
+### 3) Build dbt Models
+
+Run dbt (staging + intermediate + marts + tests):
+
+```bash
+cd dbt/crm_sales_analytics
+dbt build
+```
+
+Lineage / DAG view (example):
+
+![dbt lineage graph](dashboards/screenshots/LineageGraph.png)
+
+## Documentation
+
+- Architecture: [docs/architecture.md](docs/architecture.md)
+- Business requirements: [docs/business_requirements.md](docs/business_requirements.md)
+- Data generation: [docs/data_generation.md](docs/data_generation.md)
+- Snowflake RAW layer: [docs/snowflake_raw_layer.md](docs/snowflake_raw_layer.md)
+- dbt staging layer: [docs/dbt_staging_layer.md](docs/dbt_staging_layer.md)
+- dbt marts layer: [docs/dbt_marts_layer.md](docs/dbt_marts_layer.md)
+- Power BI dashboard: [docs/powerbi_dashboard.md](docs/powerbi_dashboard.md)
+- Metrics validation (Power BI vs Snowflake): [docs/metrics_validation.md](docs/metrics_validation.md)
+- Data dictionary: [docs/data_dictionary.md](docs/data_dictionary.md)
+- Project summary: [docs/project_summary.md](docs/project_summary.md)
+
+## License
+
+See `LICENSE`.
