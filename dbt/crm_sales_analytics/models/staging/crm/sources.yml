@@ -1,0 +1,36 @@
+version: 2
+
+sources:
+  - name: crm_raw
+    database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+    schema: RAW
+    description: "Raw CRM data loaded from CSV files into Snowflake."
+
+    tables:
+      - name: regions
+        identifier: RAW_REGIONS
+        description: "Raw sales regions."
+
+      - name: customers
+        identifier: RAW_CUSTOMERS
+        description: "Raw customer companies."
+
+      - name: products
+        identifier: RAW_PRODUCTS
+        description: "Raw product catalog."
+
+      - name: sales_reps
+        identifier: RAW_SALES_REPS
+        description: "Raw sales representatives."
+
+      - name: orders
+        identifier: RAW_ORDERS
+        description: "Raw customer orders."
+
+      - name: order_items
+        identifier: RAW_ORDER_ITEMS
+        description: "Raw order line items."
+
+      - name: opportunities
+        identifier: RAW_OPPORTUNITIES
+        description: "Raw commercial opportunities."

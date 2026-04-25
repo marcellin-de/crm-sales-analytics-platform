@@ -63,6 +63,7 @@ Synthetic CRM data is generated with a Python script located in:
 ```text
 scripts/generate_crm_data.py
 ```
+
 To generate the raw CSV files:
 
 ```bash
@@ -71,7 +72,9 @@ uv run scripts/generate_crm_data.py
 
 The files are generated in:
 
+```text
 data/raw/
+```
 
 ## Snowflake RAW Layer
 
@@ -87,7 +90,35 @@ CRM_SALES_ANALYTICS.RAW.RAW_ORDER_ITEMS
 CRM_SALES_ANALYTICS.RAW.RAW_OPPORTUNITIES
 ```
 
+## dbt Staging Layer
+
+The project uses dbt to transform raw CRM data into clean staging models.
+
+Staging models are located in:
+
+```text
+dbt/crm_sales_analytics/models/staging/crm/
+```
+
+The staging layer includes:
+
+- source definitions
+- cleaned column names
+- type casting
+- basic standardization
+- dbt tests
+- dbt documentation
+
+To run the staging models:
+
+```bash
+cd dbt/crm_sales_analytics
+dbt run --select staging
+dbt test --select staging
+```
+
 ## Key Metrics
+
 - Total Revenue
 - Monthly Revenue
 - Average Order Value
@@ -97,7 +128,8 @@ CRM_SALES_ANALYTICS.RAW.RAW_OPPORTUNITIES
 - Customer Lifetime Value
 - Opportunity Conversion Rate
 - Pipeline Value
-- Project Status
+
+## Project Status
 
 In progress.
 

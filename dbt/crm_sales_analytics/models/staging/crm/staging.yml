@@ -1,0 +1,235 @@
+version: 2
+
+models:
+  - name: stg_regions
+    description: "Cleaned staging model for sales regions."
+    columns:
+      - name: region_id
+        description: "Unique identifier of the region."
+        tests:
+          - unique
+          - not_null
+
+      - name: region_name
+        description: "Name of the sales region."
+        tests:
+          - not_null
+
+      - name: country
+        description: "Country associated with the region."
+        tests:
+          - not_null
+
+  - name: stg_customers
+    description: "Cleaned staging model for customer companies."
+    columns:
+      - name: customer_id
+        description: "Unique identifier of the customer."
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_name
+        description: "Customer company name."
+        tests:
+          - not_null
+
+      - name: industry
+        description: "Customer industry."
+
+      - name: company_size
+        description: "Customer size segment."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["Small", "Medium", "Enterprise"]
+
+      - name: region_id
+        description: "Region identifier."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_regions')
+                field: region_id
+
+      - name: customer_created_at
+        description: "Date when the customer was created."
+
+  - name: stg_products
+    description: "Cleaned staging model for products."
+    columns:
+      - name: product_id
+        description: "Unique identifier of the product."
+        tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        description: "Product name."
+        tests:
+          - not_null
+
+      - name: product_category
+        description: "Product category."
+
+      - name: standard_unit_price
+        description: "Standard product unit price."
+
+      - name: product_created_at
+        description: "Date when the product was created."
+
+  - name: stg_sales_reps
+    description: "Cleaned staging model for sales representatives."
+    columns:
+      - name: sales_rep_id
+        description: "Unique identifier of the sales representative."
+        tests:
+          - unique
+          - not_null
+
+      - name: sales_rep_name
+        description: "Sales representative full name."
+        tests:
+          - not_null
+
+      - name: sales_rep_email
+        description: "Sales representative email address."
+
+      - name: region_id
+        description: "Assigned region identifier."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_regions')
+                field: region_id
+
+      - name: hire_date
+        description: "Sales representative hiring date."
+
+  - name: stg_orders
+    description: "Cleaned staging model for customer orders."
+    columns:
+      - name: order_id
+        description: "Unique identifier of the order."
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: "Customer identifier."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+
+      - name: sales_rep_id
+        description: "Sales representative identifier."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_sales_reps')
+                field: sales_rep_id
+
+      - name: order_date
+        description: "Date of the order."
+        tests:
+          - not_null
+
+      - name: order_status
+        description: "Status of the order."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["Completed", "Cancelled", "Returned"]
+
+      - name: payment_status
+        description: "Payment status of the order."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["Paid", "Pending", "Failed"]
+
+  - name: stg_order_items
+    description: "Cleaned staging model for order line items."
+    columns:
+      - name: order_item_id
+        description: "Unique identifier of the order item."
+        tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: "Order identifier."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: product_id
+        description: "Product identifier."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+      - name: quantity
+        description: "Quantity sold."
+
+      - name: unit_price
+        description: "Unit price at the time of sale."
+
+      - name: discount
+        description: "Discount applied to the order item."
+
+  - name: stg_opportunities
+    description: "Cleaned staging model for commercial opportunities."
+    columns:
+      - name: opportunity_id
+        description: "Unique identifier of the opportunity."
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: "Customer identifier."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+
+      - name: sales_rep_id
+        description: "Sales representative identifier."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_sales_reps')
+                field: sales_rep_id
+
+      - name: opportunity_created_date
+        description: "Date when the opportunity was created."
+
+      - name: opportunity_close_date
+        description: "Date when the opportunity was closed."
+
+      - name: opportunity_stage
+        description: "Current or final stage of the opportunity."
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - "Prospecting"
+                  - "Qualification"
+                  - "Proposal"
+                  - "Negotiation"
+                  - "Closed Won"
+                  - "Closed Lost"
+
+      - name: expected_revenue
+        description: "Expected revenue of the opportunity."
+
+      - name: probability
+        description: "Probability of closing the opportunity."
