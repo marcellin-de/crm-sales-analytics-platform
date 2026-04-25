@@ -1,0 +1,59 @@
+version: 2
+
+models:
+  - name: int_order_items_enriched
+    description: "Intermediate model that enriches order items with order, customer, product, sales representative, and region information."
+    columns:
+      - name: order_item_id
+        tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        tests:
+          - not_null
+
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: product_id
+        tests:
+          - not_null
+
+      - name: quantity
+        tests:
+          - not_null
+
+      - name: recognized_revenue
+        description: "Revenue recognized only for completed and paid orders."
+
+  - name: int_opportunities_enriched
+    description: "Intermediate model that enriches opportunities with customer, sales representative, and region information."
+    columns:
+      - name: opportunity_id
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: sales_rep_id
+        tests:
+          - not_null
+
+      - name: weighted_pipeline_value
+        description: "Expected revenue multiplied by probability."
+
+  - name: int_customer_order_metrics
+    description: "Customer-level order and revenue metrics."
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+      - name: recognized_revenue
+        description: "Total recognized revenue by customer."

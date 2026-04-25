@@ -117,6 +117,53 @@ dbt run --select staging
 dbt test --select staging
 ```
 
+## dbt Intermediate and Marts Layer
+
+The project uses dbt to build analytics-ready models from the staging layer.
+
+### Intermediate Models
+
+Intermediate models apply reusable joins and business logic:
+
+- `int_order_items_enriched`
+- `int_opportunities_enriched`
+- `int_customer_order_metrics`
+
+### Core Marts
+
+The core marts follow a star schema design:
+
+- `dim_customers`
+- `dim_products`
+- `dim_regions`
+- `dim_sales_reps`
+- `dim_dates`
+- `fct_order_items`
+- `fct_opportunities`
+
+### Business Marts
+
+Business marts are designed for Power BI reporting:
+
+- `mart_sales_performance`
+- `mart_customer_revenue`
+- `mart_product_performance`
+
+### Main Business Rule
+
+Recognized revenue is calculated only for completed and paid orders:
+
+```text
+recognized_revenue = quantity * unit_price * (1 - discount)
+```
+
+To build the models:
+
+```bash
+cd dbt/crm_sales_analytics
+dbt build
+```
+
 ## Key Metrics
 
 - Total Revenue

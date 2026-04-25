@@ -21,3 +21,13 @@ models:
       +materialized: view
       +schema: STAGING
       +tags: ['staging', 'crm']
+
+    intermediate:
+      +materialized: view
+      +schema: INTERMEDIATE
+      +tags: ['intermediate', 'crm']
+
+    marts:
+      +materialized: table
+      +schema: MARTS
+      +tags: ['mart', 'crm']

@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: mart_sales_performance
+    description: "Monthly sales performance mart by sales representative."
+    columns:
+      - name: sales_rep_id
+        tests:
+          - not_null
+
+      - name: performance_month
+        tests:
+          - not_null
+
+      - name: recognized_revenue
+        description: "Revenue recognized from completed and paid orders."
+
+      - name: opportunity_win_rate
+        description: "Won opportunities divided by closed opportunities."
+
+  - name: mart_customer_revenue
+    description: "Customer revenue mart for customer analysis and segmentation."
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+      - name: recognized_revenue
+        description: "Total recognized revenue by customer."
+
+  - name: mart_product_performance
+    description: "Product performance mart for product and category analysis."
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+      - name: recognized_revenue
+        description: "Total recognized revenue by product."
