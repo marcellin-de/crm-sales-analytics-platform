@@ -1,0 +1,21 @@
+sales_rep_id,sales_rep_name,email,region_id,hire_date
+1,Nora Durand,nora.durand1@company.com,2,2021-12-18
+2,Ines Thomas,ines.thomas2@company.com,1,2020-04-08
+3,Sarah Garcia,sarah.garcia3@company.com,7,2020-12-06
+4,Yanis David,yanis.david4@company.com,7,2021-12-20
+5,Nathan Lefebvre,nathan.lefebvre5@company.com,2,2024-08-24
+6,Omar Vincent,omar.vincent6@company.com,4,2020-11-29
+7,Clara Bernard,clara.bernard7@company.com,1,2021-08-26
+8,Emma Simon,emma.simon8@company.com,5,2020-08-02
+9,Sofia Simon,sofia.simon9@company.com,3,2024-12-23
+10,Sarah Richard,sarah.richard10@company.com,2,2023-01-25
+11,Sofia Simon,sofia.simon11@company.com,8,2023-12-13
+12,Emma Michel,emma.michel12@company.com,3,2023-05-28
+13,Yanis Richard,yanis.richard13@company.com,1,2020-07-26
+14,Maya Petit,maya.petit14@company.com,4,2022-04-18
+15,Chloe Roux,chloe.roux15@company.com,5,2023-09-14
+16,Leo Moreau,leo.moreau16@company.com,4,2020-07-15
+17,Lucas Lefebvre,lucas.lefebvre17@company.com,8,2020-11-10
+18,Lucas Laurent,lucas.laurent18@company.com,1,2022-05-25
+19,Sofia Moreau,sofia.moreau19@company.com,8,2021-02-12
+20,Noah Martin,noah.martin20@company.com,4,2020-12-15

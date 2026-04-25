@@ -56,6 +56,23 @@ The project uses synthetic CRM data:
 - order items
 - opportunities
 
+## Data Generation
+
+Synthetic CRM data is generated with a Python script located in:
+
+```text
+scripts/generate_crm_data.py
+```
+To generate the raw CSV files:
+
+```bash
+uv run scripts/generate_crm_data.py
+```
+
+The files are generated in:
+
+data/raw/
+
 ## Key Metrics
 - Total Revenue
 - Monthly Revenue

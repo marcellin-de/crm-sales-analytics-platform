@@ -1,0 +1,31 @@
+product_id,product_name,category,unit_price,created_at
+1,CRM Starter,CRM Software,49,2024-10-11
+2,CRM Professional,CRM Software,149,2023-12-23
+3,CRM Enterprise,CRM Software,399,2024-12-31
+4,Sales Automation Basic,Sales Automation,99,2024-04-02
+5,Sales Automation Pro,Sales Automation,249,2023-12-26
+6,Lead Scoring Engine,Sales Intelligence,199,2025-02-13
+7,Customer Segmentation,Analytics,299,2024-09-20
+8,Revenue Forecasting,Analytics,349,2024-08-26
+9,Marketing Attribution,Marketing,279,2023-09-18
+10,Email Campaign Suite,Marketing,129,2023-12-30
+11,Data Integration Connector,Data Integration,499,2023-01-04
+12,API Access Package,Data Integration,599,2025-03-12
+13,Advanced Reporting,Business Intelligence,199,2023-03-08
+14,Executive Dashboard,Business Intelligence,299,2024-01-08
+15,Customer Success Module,Customer Success,179,2024-10-13
+16,Support Ticket Analytics,Customer Success,149,2024-03-28
+17,AI Sales Assistant,AI,699,2023-08-02
+18,Predictive Churn Model,AI,799,2025-10-13
+19,Workflow Automation,Automation,249,2023-10-16
+20,Enterprise Security Pack,Security,399,2024-11-09
+21,Single Sign-On,Security,199,2023-06-09
+22,Data Quality Monitor,Data Quality,349,2024-05-02
+23,Data Governance Module,Data Governance,449,2024-12-11
+24,Partner Portal,Collaboration,229,2024-10-16
+25,Mobile Sales App,Mobile,159,2023-12-10
+26,Training Package,Services,999,2023-07-01
+27,Implementation Package,Services,2499,2024-11-18
+28,Premium Support,Services,1499,2025-07-03
+29,Custom Integration,Services,3999,2023-01-24
+30,Strategic Consulting,Services,4999,2024-06-27
