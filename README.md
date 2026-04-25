@@ -176,6 +176,31 @@ dbt build
 - Opportunity Conversion Rate
 - Pipeline Value
 
+## Power BI Dashboard
+
+The final analytics layer is visualized in Power BI.
+
+The dashboard connects to the Snowflake MARTS schema and provides four analysis pages:
+
+- Executive Overview
+- Sales Performance
+- Customer Analysis
+- Product Performance
+
+Dashboard file:
+
+```text
+dashboards/powerbi/crm_sales_analytics_dashboard.pbix
+```
+
+Screenshots:
+
+```text
+dashboards/screenshots/
+```
+
+The dashboard uses a star schema model with fact and dimension tables created by dbt.
+
 ## Project Status
 
 In progress.
