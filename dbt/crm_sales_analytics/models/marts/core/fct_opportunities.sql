@@ -1,7 +1,22 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='opportunity_id',
+        incremental_strategy='merge'
+    )
+}}
+
 
 with opportunities_enriched as (
 
     select * from {{ ref('int_opportunities_enriched') }}
+
+    {% if is_incremental() %}
+        where opportunity_created_date >= (
+            select coalesce(max(opportunity_created_date), '1900-01-01'::date)
+            from {{ this }}
+        )
+    {% endif %}
 
 ),
 

@@ -1,7 +1,22 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='order_item_id',
+        incremental_strategy='merge'
+    )
+}}
+
 
 with order_items_enriched as (
 
     select * from {{ ref('int_order_items_enriched') }}
+
+    {% if is_incremental() %}
+        where order_date >= (
+            select coalesce(max(order_date), '1900-01-01'::date)
+            from {{ this }}
+        )
+    {% endif %}
 
 ),
 

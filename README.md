@@ -93,6 +93,42 @@ Recognized revenue is counted only for completed and paid orders:
 recognized_revenue = quantity * unit_price * (1 - discount)
 ```
 
+## Advanced dbt Features
+
+This project includes advanced dbt features to make the pipeline more reliable and production-oriented.
+
+### Custom Data Tests
+
+Custom generic tests validate business rules such as:
+
+- revenue must not be negative
+- quantity must be positive
+- discount must be between 0 and 1
+- probability must be between 0 and 1
+
+### Singular Business Tests
+
+Singular tests validate project-specific business rules:
+
+- recognized revenue logic
+- no future order dates
+- opportunity close date after created date
+
+### Source Freshness
+
+A load audit table is used to check whether the raw data load is fresh.
+
+### Incremental Models
+
+The main fact tables are configured as incremental models:
+
+- fct_order_items
+- fct_opportunities
+
+### Snapshots
+
+A customer snapshot tracks historical changes in customer attributes.
+
 ## Power BI Dashboard
 
 The final analytics layer is visualized in Power BI.
@@ -190,6 +226,7 @@ Lineage / DAG view (example):
 - dbt marts layer: [docs/dbt_marts_layer.md](docs/dbt_marts_layer.md)
 - Power BI dashboard: [docs/powerbi_dashboard.md](docs/powerbi_dashboard.md)
 - Metrics validation (Power BI vs Snowflake): [docs/metrics_validation.md](docs/metrics_validation.md)
+- Data quality strategy: [docs/data_quality_strategy.md](docs/data_quality_strategy.md)
 - Data dictionary: [docs/data_dictionary.md](docs/data_dictionary.md)
 - Project summary: [docs/project_summary.md](docs/project_summary.md)
 

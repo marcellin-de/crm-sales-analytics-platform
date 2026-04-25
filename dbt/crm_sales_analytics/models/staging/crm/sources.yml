@@ -34,3 +34,11 @@ sources:
       - name: opportunities
         identifier: RAW_OPPORTUNITIES
         description: "Raw commercial opportunities."
+      - name: load_audit
+        identifier: RAW_LOAD_AUDIT
+        description: "Audit table tracking the last load timestamp for raw CRM tables."
+        config:
+          loaded_at_field: loaded_at
+          freshness:
+            warn_after: {count: 30, period: day}
+            error_after: {count: 90, period: day}
