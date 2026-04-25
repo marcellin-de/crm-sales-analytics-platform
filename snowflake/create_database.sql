@@ -1,0 +1,25 @@
+-- ============================================================
+-- Create database, warehouse, and schemas
+-- Project: CRM Sales Analytics Platform
+-- ============================================================
+
+USE ROLE ACCOUNTADMIN;
+
+CREATE
+OR
+REPLACE
+    WAREHOUSE CRM_ANALYTICS_WH WAREHOUSE_SIZE = 'XSMALL' AUTO_SUSPEND = 60 AUTO_RESUME = TRUE INITIALLY_SUSPENDED = TRUE;
+
+CREATE OR REPLACE DATABASE CRM_SALES_ANALYTICS;
+
+USE DATABASE CRM_SALES_ANALYTICS;
+
+CREATE OR REPLACE SCHEMA RAW;
+
+CREATE OR REPLACE SCHEMA STAGING;
+
+CREATE OR REPLACE SCHEMA MARTS;
+
+USE WAREHOUSE CRM_ANALYTICS_WH;
+
+USE SCHEMA RAW;

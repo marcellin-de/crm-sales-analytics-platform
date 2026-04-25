@@ -73,6 +73,20 @@ The files are generated in:
 
 data/raw/
 
+## Snowflake RAW Layer
+
+The raw CSV files are loaded into Snowflake under the `RAW` schema.
+
+```text
+CRM_SALES_ANALYTICS.RAW.RAW_CUSTOMERS
+CRM_SALES_ANALYTICS.RAW.RAW_PRODUCTS
+CRM_SALES_ANALYTICS.RAW.RAW_REGIONS
+CRM_SALES_ANALYTICS.RAW.RAW_SALES_REPS
+CRM_SALES_ANALYTICS.RAW.RAW_ORDERS
+CRM_SALES_ANALYTICS.RAW.RAW_ORDER_ITEMS
+CRM_SALES_ANALYTICS.RAW.RAW_OPPORTUNITIES
+```
+
 ## Key Metrics
 - Total Revenue
 - Monthly Revenue
