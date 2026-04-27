@@ -35,6 +35,7 @@ dbt/crm_sales_analytics/target/
 dbt/crm_sales_analytics/dbt_packages/
 dbt/crm_sales_analytics/logs/
 profiles.yml
+dbt/**/.user.yml
 
 # PyInstaller
 #   Usually these files are written by a python script from a template

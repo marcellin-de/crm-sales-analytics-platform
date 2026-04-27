@@ -20,6 +20,18 @@ RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 START_DATE = datetime(2023, 1, 1)
 END_DATE = datetime(2025, 12, 31)
+MAX_OPPORTUNITY_DURATION_DAYS = 180
+
+REGIONS = [
+    {"region_id": 1, "region_name": "North America", "country": "United States"},
+    {"region_id": 2, "region_name": "Western Europe", "country": "France"},
+    {"region_id": 3, "region_name": "DACH", "country": "Germany"},
+    {"region_id": 4, "region_name": "Southern Europe", "country": "Spain"},
+    {"region_id": 5, "region_name": "Middle East", "country": "United Arab Emirates"},
+    {"region_id": 6, "region_name": "North Africa", "country": "Tunisia"},
+    {"region_id": 7, "region_name": "West Africa", "country": "Senegal"},
+    {"region_id": 8, "region_name": "Central Africa", "country": "Gabon"},
+]
 
 
 # -------------------------------------------------------------------
@@ -45,30 +57,31 @@ def save_csv(df: pd.DataFrame, filename: str) -> None:
     print(f"Generated {filename}: {len(df)} rows")
 
 
+def build_country_region_map(regions_df: pd.DataFrame) -> dict[str, list[int]]:
+    """Build a country-to-region-id lookup."""
+    grouped = regions_df.groupby("country")["region_id"].apply(list)
+    return grouped.to_dict()
+
+
+def ensure(condition: bool, message: str) -> None:
+    """Raise ValueError when a validation condition is not met."""
+    if not condition:
+        raise ValueError(message)
+
+
 # -------------------------------------------------------------------
 # Generate regions
 # -------------------------------------------------------------------
 
 def generate_regions() -> pd.DataFrame:
-    regions = [
-        {"region_id": 1, "region_name": "North America", "country": "United States"},
-        {"region_id": 2, "region_name": "Western Europe", "country": "France"},
-        {"region_id": 3, "region_name": "DACH", "country": "Germany"},
-        {"region_id": 4, "region_name": "Southern Europe", "country": "Spain"},
-        {"region_id": 5, "region_name": "Middle East", "country": "United Arab Emirates"},
-        {"region_id": 6, "region_name": "North Africa", "country": "Tunisia"},
-        {"region_id": 7, "region_name": "West Africa", "country": "Senegal"},
-        {"region_id": 8, "region_name": "Central Africa", "country": "Gabon"},
-    ]
-
-    return pd.DataFrame(regions)
+    return pd.DataFrame(REGIONS)
 
 
 # -------------------------------------------------------------------
 # Generate customers
 # -------------------------------------------------------------------
 
-def generate_customers(number_of_customers: int = 500) -> pd.DataFrame:
+def generate_customers(regions_df: pd.DataFrame, number_of_customers: int = 500) -> pd.DataFrame:
     industries = [
         "Technology",
         "Finance",
@@ -112,16 +125,8 @@ def generate_customers(number_of_customers: int = 500) -> pd.DataFrame:
         "Services",
     ]
 
-    countries = [
-        "United States",
-        "France",
-        "Germany",
-        "Spain",
-        "United Arab Emirates",
-        "Tunisia",
-        "Senegal",
-        "Gabon",
-    ]
+    country_to_region_ids = build_country_region_map(regions_df)
+    countries = list(country_to_region_ids.keys())
 
     customers = []
 
@@ -136,8 +141,8 @@ def generate_customers(number_of_customers: int = 500) -> pd.DataFrame:
                 "customer_name": company_name,
                 "industry": random.choice(industries),
                 "company_size": random.choice(company_sizes),
-                "country": random.choice(countries),
-                "region_id": random.randint(1, 8),
+                "country": (country := random.choice(countries)),
+                "region_id": random.choice(country_to_region_ids[country]),
                 "created_at": format_date(created_at),
             }
         )
@@ -205,7 +210,7 @@ def generate_products() -> pd.DataFrame:
 # Generate sales representatives
 # -------------------------------------------------------------------
 
-def generate_sales_reps(number_of_sales_reps: int = 20) -> pd.DataFrame:
+def generate_sales_reps(regions_df: pd.DataFrame, number_of_sales_reps: int = 20) -> pd.DataFrame:
     first_names = [
         "Emma",
         "Lucas",
@@ -259,6 +264,7 @@ def generate_sales_reps(number_of_sales_reps: int = 20) -> pd.DataFrame:
     ]
 
     sales_reps = []
+    region_ids = regions_df["region_id"].tolist()
 
     for sales_rep_id in range(1, number_of_sales_reps + 1):
         first_name = random.choice(first_names)
@@ -271,7 +277,7 @@ def generate_sales_reps(number_of_sales_reps: int = 20) -> pd.DataFrame:
                 "sales_rep_id": sales_rep_id,
                 "sales_rep_name": full_name,
                 "email": email,
-                "region_id": random.randint(1, 8),
+                "region_id": random.choice(region_ids),
                 "hire_date": format_date(random_date(datetime(2020, 1, 1), datetime(2024, 12, 31))),
             }
         )
@@ -328,7 +334,7 @@ def generate_order_items(
 
     products = products_df.to_dict("records")
 
-    for _, order in orders_df.iterrows():
+    for order in orders_df.itertuples(index=False):
         number_of_items = random.randint(min_items_per_order, max_items_per_order)
         selected_products = random.sample(products, number_of_items)
 
@@ -344,7 +350,7 @@ def generate_order_items(
             order_items.append(
                 {
                     "order_item_id": order_item_id,
-                    "order_id": int(order["order_id"]),
+                    "order_id": int(order.order_id),
                     "product_id": int(product["product_id"]),
                     "quantity": quantity,
                     "unit_price": unit_price,
@@ -388,10 +394,11 @@ def generate_opportunities(
     sales_rep_ids = sales_reps_df["sales_rep_id"].tolist()
 
     opportunities = []
+    latest_possible_created_date = END_DATE - timedelta(days=7)
 
     for opportunity_id in range(1, number_of_opportunities + 1):
-        created_date = random_date(START_DATE, END_DATE)
-        close_date = created_date + timedelta(days=random.randint(7, 180))
+        created_date = random_date(START_DATE, latest_possible_created_date)
+        close_date = created_date + timedelta(days=random.randint(7, MAX_OPPORTUNITY_DURATION_DAYS))
 
         if close_date > END_DATE:
             close_date = END_DATE
@@ -431,26 +438,39 @@ def validate_data(
 ) -> None:
     """Run simple validation checks before saving files."""
 
-    assert customers_df["customer_id"].is_unique, "customer_id must be unique"
-    assert products_df["product_id"].is_unique, "product_id must be unique"
-    assert regions_df["region_id"].is_unique, "region_id must be unique"
-    assert sales_reps_df["sales_rep_id"].is_unique, "sales_rep_id must be unique"
-    assert orders_df["order_id"].is_unique, "order_id must be unique"
-    assert order_items_df["order_item_id"].is_unique, "order_item_id must be unique"
-    assert opportunities_df["opportunity_id"].is_unique, "opportunity_id must be unique"
+    ensure(customers_df["customer_id"].is_unique, "customer_id must be unique")
+    ensure(products_df["product_id"].is_unique, "product_id must be unique")
+    ensure(regions_df["region_id"].is_unique, "region_id must be unique")
+    ensure(sales_reps_df["sales_rep_id"].is_unique, "sales_rep_id must be unique")
+    ensure(orders_df["order_id"].is_unique, "order_id must be unique")
+    ensure(order_items_df["order_item_id"].is_unique, "order_item_id must be unique")
+    ensure(opportunities_df["opportunity_id"].is_unique, "opportunity_id must be unique")
 
-    assert orders_df["customer_id"].isin(customers_df["customer_id"]).all(), "orders.customer_id has invalid values"
-    assert orders_df["sales_rep_id"].isin(sales_reps_df["sales_rep_id"]).all(), "orders.sales_rep_id has invalid values"
+    ensure(orders_df["customer_id"].isin(customers_df["customer_id"]).all(), "orders.customer_id has invalid values")
+    ensure(orders_df["sales_rep_id"].isin(sales_reps_df["sales_rep_id"]).all(), "orders.sales_rep_id has invalid values")
 
-    assert order_items_df["order_id"].isin(orders_df["order_id"]).all(), "order_items.order_id has invalid values"
-    assert order_items_df["product_id"].isin(products_df["product_id"]).all(), "order_items.product_id has invalid values"
+    ensure(order_items_df["order_id"].isin(orders_df["order_id"]).all(), "order_items.order_id has invalid values")
+    ensure(order_items_df["product_id"].isin(products_df["product_id"]).all(), "order_items.product_id has invalid values")
 
-    assert opportunities_df["customer_id"].isin(customers_df["customer_id"]).all(), "opportunities.customer_id has invalid values"
-    assert opportunities_df["sales_rep_id"].isin(sales_reps_df["sales_rep_id"]).all(), "opportunities.sales_rep_id has invalid values"
+    ensure(opportunities_df["customer_id"].isin(customers_df["customer_id"]).all(), "opportunities.customer_id has invalid values")
+    ensure(opportunities_df["sales_rep_id"].isin(sales_reps_df["sales_rep_id"]).all(), "opportunities.sales_rep_id has invalid values")
 
-    assert (order_items_df["quantity"] > 0).all(), "quantity must be greater than 0"
-    assert (order_items_df["unit_price"] > 0).all(), "unit_price must be greater than 0"
-    assert (order_items_df["discount"] >= 0).all(), "discount must be greater than or equal to 0"
+    ensure((order_items_df["quantity"] > 0).all(), "quantity must be greater than 0")
+    ensure((order_items_df["unit_price"] > 0).all(), "unit_price must be greater than 0")
+    ensure((order_items_df["discount"] >= 0).all(), "discount must be greater than or equal to 0")
+    ensure((order_items_df["discount"] <= 1).all(), "discount must be less than or equal to 1")
+    ensure((opportunities_df["close_date"] >= opportunities_df["created_date"]).all(), "opportunity close date must be on or after created date")
+
+    customer_country_region = customers_df.merge(
+        regions_df[["region_id", "country"]],
+        on="region_id",
+        how="left",
+        suffixes=("_customer", "_region"),
+    )
+    ensure(
+        (customer_country_region["country_customer"] == customer_country_region["country_region"]).all(),
+        "customers.country must match the assigned region country",
+    )
 
     print("All validation checks passed.")
 
@@ -463,9 +483,9 @@ def main() -> None:
     print("Generating CRM synthetic dataset...")
 
     regions_df = generate_regions()
-    customers_df = generate_customers()
+    customers_df = generate_customers(regions_df)
     products_df = generate_products()
-    sales_reps_df = generate_sales_reps()
+    sales_reps_df = generate_sales_reps(regions_df)
     orders_df = generate_orders(customers_df, sales_reps_df)
     order_items_df = generate_order_items(orders_df, products_df)
     opportunities_df = generate_opportunities(customers_df, sales_reps_df)

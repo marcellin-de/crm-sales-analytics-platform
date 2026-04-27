@@ -1,6 +1,3 @@
--- Active: 1777122718942@@127.0.0.1@3306@USER$MARCELLIN
-
-
 with source as (
 
     select * from {{ source('crm_raw', 'regions') }}

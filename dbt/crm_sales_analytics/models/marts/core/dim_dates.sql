@@ -1,11 +1,14 @@
 with
+    date_bounds as (
+        select
+            to_date('{{ var("date_spine_start_date", "2023-01-01") }}') as start_date,
+            to_date('{{ var("date_spine_end_date", "2025-12-31") }}') as end_date
+    ),
     date_spine as (
-        select dateadd(
-                day, row_number() over (
-                    order by seq4()
-                ) - 1, '2023-01-01'::date
-            ) as date_day
-        from table (generator(rowcount => 1096))
+        select dateadd(day, row_number() over (order by seq4()) - 1, date_bounds.start_date) as date_day
+        from table (generator(rowcount => {{ var("date_spine_rowcount", 5000) }}))
+        cross join date_bounds
+        qualify date_day <= date_bounds.end_date
     ),
     final as (
         select
