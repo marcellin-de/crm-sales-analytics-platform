@@ -85,11 +85,11 @@ enriched as (
         end as recognized_revenue
 
     from order_items
-    left join orders
+    inner join orders
         on order_items.order_id = orders.order_id
-    left join products
+    inner join products
         on order_items.product_id = products.product_id
-    left join customers
+    inner join customers
         on orders.customer_id = customers.customer_id
     left join sales_reps
         on orders.sales_rep_id = sales_reps.sales_rep_id

@@ -13,7 +13,7 @@ with opportunities_enriched as (
 
     {% if is_incremental() %}
         where opportunity_created_date >= (
-            select coalesce(max(opportunity_created_date), '1900-01-01'::date)
+            select dateadd(day, -30, coalesce(max(opportunity_created_date), '1900-01-01'::date))
             from {{ this }}
         )
     {% endif %}

@@ -15,6 +15,11 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+vars:
+  date_spine_start_date: "2023-01-01"
+  date_spine_end_date: "2025-12-31"
+  date_spine_rowcount: 5000
+
 models:
   crm_sales_analytics:
     staging:

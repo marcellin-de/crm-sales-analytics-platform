@@ -104,10 +104,10 @@ final as (
         combined.total_pipeline_value,
         combined.weighted_pipeline_value,
 
-        round(
+        coalesce(round(
             combined.won_opportunities / nullif(combined.won_opportunities + combined.lost_opportunities, 0),
             4
-        ) as opportunity_win_rate,
+        ), 0) as opportunity_win_rate,
 
         round(
             combined.recognized_revenue / nullif(combined.completed_paid_orders, 0),

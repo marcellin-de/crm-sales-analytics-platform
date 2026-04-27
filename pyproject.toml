@@ -1,7 +1,7 @@
 [project]
 name = "crm-sales-analytics-platform"
 version = "0.1.0"
-description = "Add your description here"
+description = "End-to-end CRM sales analytics pipeline with Snowflake, dbt, and Power BI"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
